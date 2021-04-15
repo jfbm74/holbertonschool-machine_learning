@@ -4,8 +4,6 @@ and division
 """
 
 
-
-
 def np_elementwise(mat1, mat2):
     """
     Performs element-wise addition, subtraction, multiplication,

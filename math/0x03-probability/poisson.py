@@ -6,7 +6,9 @@ e = 2.7182818285
 
 
 class Poisson:
-    """ Represents a poisson distribution """
+    """
+    Represents a poisson distribution
+    """
     def __init__(self, data=None, lambtha=1.):
         """ Class constructor of lambtha """
         if data is None:
@@ -23,7 +25,10 @@ class Poisson:
                 self.lambtha = float(sum(data)/len(data))
 
     def pmf(self, k):
-        """  Calculates PMF of a given data of successes  k is the number of successes """
+        """
+        Calculates PMF of a given data of successes  k
+        is the number of successes
+        """
         k = int(k)
         if k < 0:
             return 0
@@ -38,7 +43,8 @@ class Poisson:
 
     def cdf(self, k):
         """
-        Calculates CDF for a given number of successes  k is the number of successes  """
+        Calculates CDF for a given number of successes
+        k is the number of successes  """
         k = int(k)
         if k < 0:
             return 0

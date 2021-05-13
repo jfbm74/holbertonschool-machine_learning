@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Function that  builds, trains, and saves a neural network classifier:"""
+"""Function that  builds, trains, and saves a neural network classifier"""
 
 
 import tensorflow as tf
@@ -13,7 +13,7 @@ forward_prop = __import__('2-forward_prop').forward_prop
 
 def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
           activations, alpha, iterations, save_path="/tmp/model.ckpt"):
-    """Function that  builds, trains, and saves a neural network classifier:"""
+    """Function that  builds, trains, and saves a neural network classifier"""
     x, y = create_placeholders(X_train.shape[1], Y_train.shape[1])
     y_pred = forward_prop(x, layer_sizes, activations)
     accuracy = calculate_accuracy(y, y_pred)

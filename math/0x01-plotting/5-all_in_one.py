@@ -25,13 +25,10 @@ y32 = np.exp((r3 / t32) * x3)
 np.random.seed(5)
 student_grades = np.random.normal(68, 15, 50)
 
-# your code here
 
-# Container of the 5 plots
 fig = plt.figure()
 plt.suptitle("All in One")
 
-# Task 0
 
 fig.add_subplot(321)
 plt.plot(y0, color='red')
@@ -39,7 +36,6 @@ plt.xlim(0, 10)
 plt.xticks(np.arange(0, 11, 2))
 plt.yticks(np.arange(0, 1500, 500))
 
-# Task 1
 
 fig.add_subplot(322)
 plt.scatter(x1, y1, color='magenta', marker=".")
@@ -47,7 +43,6 @@ plt.xlabel('Height (in)', fontsize='x-small')
 plt.ylabel('Weight (lbs)', fontsize='x-small')
 plt.title("Men's Height vs Weight", fontsize='x-small')
 
-# Task 2
 
 fig.add_subplot(323)
 plt.plot(x2, y2)
@@ -57,7 +52,6 @@ plt.title("Exponential Decay of C-14", fontsize='x-small')
 plt.yscale('log')
 plt.xlim(0, 28650)
 
-# Task 3
 
 fig.add_subplot(324)
 plt.xlabel('Time (years)', fontsize='x-small')
@@ -69,7 +63,6 @@ plt.plot(x3, y31, color='red', linestyle='dashed', label="C-14")
 plt.plot(x3, y32, color='green', label="Ra-226")
 plt.legend(loc='upper right', fontsize='x-small')
 
-# Task 4
 
 fig.add_subplot(313)
 plt.xticks(np.arange(0, 110, 10))
@@ -82,7 +75,6 @@ plt.hist(student_grades, bins=range(0, 101, 10), edgecolor='black')
 plt.xlim(0, 100)
 plt.ylim(0, 30)
 
-# Task 5
 
 fig.tight_layout()
 plt.show()

@@ -20,7 +20,7 @@ class Neuron:
         # weights vector for the neuron
         # default mean is 0
         # default stddev is 1
-        self.__W = np.random.normal(size=(1, nx))
+        self.__W = np.random.randn(1, nx)
         # bias for the neuron
         self.__b = 0
         # activated output of the neuron (prediction)

@@ -19,6 +19,9 @@ class Neuron:
             raise TypeError("nx must be an integer")
         if nx < 1:
             raise ValueError("nx must be a positive integer")
+        # weights vector for the neuron
+        # default mean is 0
+        # default stddev is 1
         self.nx = nx
         self.W = np.random.randn(1, nx)
         # bias for the neuron

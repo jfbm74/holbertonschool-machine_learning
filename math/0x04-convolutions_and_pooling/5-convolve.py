@@ -27,5 +27,5 @@ def convolve(images, kernels, padding='same', stride=(1, 1)):
                 x = i * sh
                 y = j * sw
                 output[:, i, j, k] = (padded[:, x: x + kh, y: y + kw, :] *
-                                   kernels[:, :, :, k]).sum(axis=(1, 2, 3))
+                                      kernels[:, :, :, k]).sum(axis=(1, 2, 3))
     return output

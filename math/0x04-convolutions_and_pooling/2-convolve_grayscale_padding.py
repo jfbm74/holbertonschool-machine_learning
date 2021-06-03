@@ -6,18 +6,22 @@ import numpy as np
 
 def convolve_grayscale_padding(images, kernel, padding):
     """Performs a convolution on grayscale images custom padding"""
-    m, h, w = images.shape[0], images.shape[1], images.shape[2]
-    kh, kw = kernel.shape[0], kernel.shape[1]
-    ph, pw = padding[0], padding[1]
-    nw = int(w - kw + (2 * pw) + 1)
-    nh = int(h - kh + (2 * ph) + 1)
-    output = np.zeros((m, nh, nw))
-    pad = ((0, 0), (ph, ph), (pw, pw))
-    imagesp = np.pad(images, pad_width=npad,
-                     mode='constant', constant_values=0)
-    for i in range(nh):
-        for j in range(nw):
-            image = imagesp[:, i:i + kh, j:j + kw]
-            output[:, i, j] = np.sum(np.multiply(image, kernel),
-                                     axis=(1, 2))
+    input_w, input_h, m = images.shape[2], images.shape[1], images.shape[0]
+    filter_w, filter_h = kernel.shape[1], kernel.shape[0]
+    pw, ph = padding[1], padding[0]
+    output_h = input_h + 2 * ph - filter_h + 1
+    output_w = input_w + 2 * pw - filter_w + 1
+    pad_size = ((0, 0), (ph, ph), (pw, pw))
+    images_padded = np.pad(images,
+                           pad_width=pad_size,
+                           mode='constant',
+                           constant_values=0)
+
+    output = np.zeros((m, output_h, output_w))
+
+    for x in range(output_w):
+        for y in range(output_h):
+            output[:, y, x] = (kernel * images_padded[:, y: y + filter_h,
+                               x: x + filter_w]).sum(axis=(1, 2))
+
     return output

@@ -32,17 +32,18 @@ class DeepNeuralNetwork:
         self.cache = {}
         self.weights = self.Weights_init(nx, layers)
 
+    # getter functions
     @property
     def L(self):
-        """ Layers getter """
+        """Retrieves L"""
         return self.__L
 
     @property
     def cache(self):
-        """ Cache getter """
+        """Retrieves cache"""
         return self.__cache
 
     @property
     def weights(self):
-        """ weights getter """
+        """Retrieves weights"""
         return self.__weights

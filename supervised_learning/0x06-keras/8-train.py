@@ -8,34 +8,8 @@ def train_model(network, data, labels, batch_size, epochs,
                 learning_rate_decay=False, alpha=0.1, decay_rate=1,
                 save_best=False, filepath=None, verbose=True, shuffle=False):
     """trains a model using mini-batch gradient descent
-    Args:
-        network: the model to train
-        data: numpy.ndarray of shape (m, nx) containing the input data
-        labels: one-hot numpy.ndarray, shape (m, classes) contains the labels
-        batch_size: size of the batch used for mini-batch gradient descent
-        epochs: number of passes through data for mini-batch gradient descent
-        validation_data is the data to validate the model with, if not None
-        early_stopping: boolean indicating whether early stopping is used
-            early stopping should only be performed if validation_data exists
-            early stopping should be based on validation loss
-        patience is the patience used for early stopping
-        learning_rate_decay:boolean indicating when learning_rate_decay apply
-            learning_rate_decay only to be applied if validation_data exists
-            the decay should be performed using inverse time decay
-            learning rate should decay in a stepwise fashion after each epoch
-            each time the learning rate updates, Keras should print a message
-        alpha: is the initial learning rate
-        decay_rate: is the decay rate
-        save_best: boolean indicating whether to save the model
-            after each epoch if it is the best
-        filepath: is the file path where the model should be saved
-        verbose: boolean that determines if output should be printed
-        shuffle: boolean that determines whether to shuffle batches each epoch
-            Normally, it is a good idea to shuffle, but for reproducibility,
-            we have chosen to set the default to False.
-    Returns: the History object generated after training the model
     """
-    callback_list = []
+    listing = []
     if save_best:
         save_model = K.callbacks.ModelCheckpoint(
             filepath=filepath,
@@ -43,7 +17,7 @@ def train_model(network, data, labels, batch_size, epochs,
             save_best_only=True,
             mode='min'
         )
-        callback_list.append(save_model)
+        listing.append(save_model)
 
     def lr_scheduler(epoch):
         """Schedule learning rate """
@@ -55,14 +29,14 @@ def train_model(network, data, labels, batch_size, epochs,
                 lr_scheduler,
                 verbose=1
             )
-            callback_list.append(lr_decay)
+            listing.append(lr_decay)
         if early_stopping:
             early_stop = K.callbacks.EarlyStopping(
                 monitor='val_loss',
                 mode='min',
                 patience=patience
             )
-            callback_list.append(early_stop)
+            listing.append(early_stop)
     else:
         early_stop = None
     history = network.fit(
@@ -71,7 +45,7 @@ def train_model(network, data, labels, batch_size, epochs,
         batch_size=batch_size,
         epochs=epochs,
         verbose=verbose,
-        callbacks=callback_list,
+        callbacks=listing,
         validation_data=validation_data,
         shuffle=shuffle,
     )

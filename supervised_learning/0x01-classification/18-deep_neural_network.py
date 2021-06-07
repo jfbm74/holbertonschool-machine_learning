@@ -61,4 +61,4 @@ class DeepNeuralNetwork:
                            self.__cache["A{}".format(i)]) +
                  self.__weights["b{}".format(i + 1)])
             self.__cache["A{}".format(i + 1)] = (np.exp(Z) / (np.exp(Z) + 1))
-        return (self.__cache["A{}".format(i + 1)], self.__cache)
+        return self.__cache["A{}".format(i + 1)], self.__cache

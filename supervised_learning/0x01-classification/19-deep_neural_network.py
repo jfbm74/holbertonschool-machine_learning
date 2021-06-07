@@ -3,12 +3,12 @@
 Module that defines a deep neural network performing binary classification
 """
 
-
 import numpy as np
 
 
 class DeepNeuralNetwork:
     """Class a deep neural network performing binary classification"""
+
     def __init__(self, nx, layers):
         """
         Class constructor
@@ -27,14 +27,14 @@ class DeepNeuralNetwork:
             if type(layers[i]) is not int or layers[i] <= 0:
                 raise TypeError("layers must be a list of positive integers")
             if i == 0:
-                self.__weights["W{}".format(i+1)] = (np.random.randn(layers[i],
-                                                     self.nx) *
-                                                     np.sqrt(2/self.nx))
+                self.__weights["W{}".format(i + 1)] = (np.random.randn(layers[i],
+                                                                       self.nx) *
+                                                       np.sqrt(2 / self.nx))
             else:
-                self.__weights["W{}".format(i+1)] = (np.random.randn(layers[i],
-                                                     layers[i-1]) *
-                                                     np.sqrt(2/layers[i-1]))
-            self.__weights["b{}".format(i+1)] = np.zeros((layers[i], 1))
+                self.__weights["W{}".format(i + 1)] = (np.random.randn(layers[i],
+                                                                       layers[i - 1]) *
+                                                       np.sqrt(2 / layers[i - 1]))
+            self.__weights["b{}".format(i + 1)] = np.zeros((layers[i], 1))
 
     @property
     def L(self):
@@ -67,5 +67,5 @@ class DeepNeuralNetwork:
         """
         Calculates the cost of the model using logistic regression"""
         m = Y.shape[1]
-        return ((-1/m)*np.sum(np.multiply(Y, np.log(A)) +
-                             np.multiply((1-Y), np.log(1.0000001 - A))))
+        return ((-1 / m) * np.sum(np.multiply(Y, np.log(A)) +
+                                  np.multiply((1 - Y), np.log(1.0000001 - A))))

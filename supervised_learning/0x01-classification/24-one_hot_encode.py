@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-""" Module that converts a numeric label vector into a one-hot matrix"""
+""" Module that converts a numeric label vector into a
+one-hot matrix"""
 import numpy as np
 
 
 def one_hot_encode(Y, classes):
-    """ Function that converts a numeric label vector into a one-hot matrix
+    """ Function that converts a numeric label vector into
+    a one-hot matrix
     """
     if type(classes) is not int or classes <= 0:
         return None

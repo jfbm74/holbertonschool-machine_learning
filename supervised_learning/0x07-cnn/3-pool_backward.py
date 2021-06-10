@@ -12,32 +12,23 @@ def pool_backward(dA, A_prev, kernel_shape, stride=(1, 1), mode='max'):
     Function that performs back propagation over a pooling layer of a
      neural network
     """
-    m = dA.shape[0]
-    h_new = dA.shape[1]
-    w_new = dA.shape[2]
-    c = dA.shape[3]
-    kh = kernel_shape[0]
-    kw = kernel_shape[1]
-    sh = stride[0]
-    sw = stride[1]
+    m, h_new, w_new, c_new = dA.shape
+    kh, kw = kernel_shape
+    sh, sw = stride
+
     dA_prev = np.zeros(A_prev.shape)
+
     for i in range(m):
-        for cn in range(c):
-            for h in range(h_new):
-                for w in range(w_new):
+        for h in range(h_new):
+            for w in range(w_new):
+                for c in range(c_new):
+                    s_h = h * sh
+                    s_w = w * sw
+                    box = dA[i, h, w, c]
                     if mode == 'max':
-                        aux = A_prev[i,
-                                     h * sh: h * sh + kh,
-                                     w * sw: w * sw + kw,
-                                     cn]
-                        mask = aux == np.max(aux)
-                        dA_prev[i,
-                                h * sh: h * sh + kh,
-                                w * sw: w * sw + kw,
-                                cn] += dA[i, h, w, cn] * mask
+                        tmp = A_prev[i, s_h:kh+s_h, s_w:kw+s_w, c]
+                        mask = (tmp == np.max(tmp))
+                        dA_prev[i, s_h:kh+s_h, s_w:kw+s_w, c] += box * mask
                     if mode == 'avg':
-                        dA_prev[i,
-                                h * sh: h * sh + kh,
-                                w * sw: w * sw + kw,
-                                cn] += dA[i, h, w, cn] / (kh * kw)
+                        dA_prev[i, s_h:kh+s_h, s_w:kw+s_w, c] += box/kh/kw
     return dA_prev

@@ -1,23 +1,14 @@
 #!/usr/bin/env python3
-"""Function that performs back propagation over a convolutional
- layer of a neural network"""
-
+"""Module that performs back propagation over a convolutional layer"""
 import numpy as np
 
 
 def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
-    """Function that performs back propagation over
-    a convolutional layer of a neural network"""
-    m = A_prev.shape
-    h_prev = A_prev.shape
-    w_prev = A_prev.shape
-    c_prev = A_prev.shape
-    kh = W.shape
-    kw = W.shape
-    c_prev = W.shape
-    c_new = W.shape
-    sh = stride
-    sw = stride
+    """performs back propagation over a convolutional layer
+    """
+    m, h_prev, w_prev, c_prev = A_prev.shape
+    kh, kw, c_prev, c_new = W.shape
+    sh, sw = stride
     if padding == 'same':
         ph = int((((h_prev - 1) * sh + kh - h_prev) / 2) + 1)
         pw = int((((w_prev - 1) * sw + kw - w_prev) / 2) + 1)

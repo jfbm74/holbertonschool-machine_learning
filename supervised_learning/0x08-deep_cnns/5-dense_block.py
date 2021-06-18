@@ -9,19 +9,20 @@ def dense_block(X, nb_filters, growth_rate, layers):
     """Function that returns The concatenated output of
     each layer within the Dense Block and  the number of
     filters within the concatenated outputs, respectively"""
-    concat = X
-    for i in range(layers):
-        X = K.layers.BatchNormalization(axis=3)(concat)
-        X = K.layers.Activation('relu')(X)
-        X = K.layers.Conv2D(growth_rate * 4, kernel_size=(1, 1),
-                            padding='same',
-                            strides=(1, 1),
-                            kernel_initializer='he_normal')(X)
-        X = K.layers.BatchNormalization(axis=3)(X)
-        X = K.layers.Activation('relu')(X)
-        X = K.layers.Conv2D(growth_rate, kernel_size=(3, 3), padding='same',
-                            strides=(1, 1),
-                            kernel_initializer='he_normal')(X)
-        concat = K.layers.concatenate([concat, X], axis=3)
-        filters = filters + growth_rate
-    return concat, filters
+
+    for _ in range(layers):
+        BN1 = K.layers.BatchNormalization(axis=3)(X)
+        ReLU1 = K.layers.Activation('relu')(BN1)
+        conv1 = K.layers.Conv2D(filters=4 * growth_rate,
+                                kernel_size=1,
+                                padding='same',
+                                kernel_initializer='he_normal')(ReLU1)
+        BN2 = K.layers.BatchNormalization(axis=3)(conv1)
+        ReLU2 = K.layers.Activation('relu')(BN2)
+        conv2 = K.layers.Conv2D(filters=growth_rate,
+                                kernel_size=3,
+                                padding='same',
+                                kernel_initializer='he_normal')(ReLU2)
+        X = K.layers.concatenate([X, conv2])
+        nb_filters += growth_rate
+    return X, nb_filters

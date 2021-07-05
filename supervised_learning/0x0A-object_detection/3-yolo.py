@@ -17,6 +17,7 @@ class Yolo:
         with open(classes_path) as f:
             classes_t = f.readlines()
 
+        # Strip each line to get the Word (Class)
         classes = [x.strip() for x in classes_t]
 
         self.model = K.models.load_model(model_path)
@@ -105,3 +106,49 @@ class Yolo:
         box_classes = classes[filtering_mask]
 
         return filtered_boxes, box_classes, box_scores
+
+    def MaxMin(self, boxA, boxB):
+        """ This is the MaxMin of the box with another one"""
+
+        x1 = max(boxA[0], boxB[0])
+        y1 = max(boxA[1], boxB[1])
+        x2 = min(boxA[2], boxB[2])
+        y2 = min(boxA[3], boxB[3])
+
+        interArea = max(0, x2 - x1 + 1) * max(0, y2 - y1 + 1)
+        boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+        boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+        MaxMin = interArea / float(boxAArea + boxBArea - interArea)
+        return MaxMin
+
+    def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
+        """ Method Non Max Suppression"""
+
+        sort_indexes = np.lexsort((-box_scores, box_classes))
+
+        box_predictions = np.array([filtered_boxes[x] for x in sort_indexes])
+        predictedClasses = np.array([box_classes[x] for x in sort_indexes])
+        predictedScores = np.array([box_scores[x] for x in sort_indexes])
+
+        _, ClassCounts = np.unique(predictedClasses, return_counts=True)
+        index = 0
+        i = 0
+
+        for n in ClassCounts:
+            while i < index + n:
+                j = i + 1
+                while j < index + n:
+                    MaxMinVar = self.MaxMin(
+                        box_predictions[i], box_predictions[j])
+                    if MaxMinVar > self.nms_t:
+                        box_predictions = np.delete(box_predictions, j, axis=0)
+                        predictedClasses = np.delete(
+                            predictedClasses, j, axis=0)
+                        predictedScores = np.delete(predictedScores,
+                                                    j, axis=0)
+                        n = n - 1
+                    else:
+                        j = j + 1
+                i = i + 1
+            index = index + n
+        return box_predictions, predictedClasses, predictedScores

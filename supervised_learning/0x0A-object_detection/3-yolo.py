@@ -5,6 +5,8 @@ object detection"""
 
 import tensorflow.keras as K
 import numpy as np
+import glob
+import cv2
 
 
 class Yolo:
@@ -152,3 +154,16 @@ class Yolo:
                 i = i + 1
             index = index + n
         return box_predictions, predictedClasses, predictedScores
+
+    @staticmethod
+    def load_images(folder_path):
+        """ Static Method that manage images """
+
+        images = []
+
+        image_paths = glob.glob(folder_path + "/*")
+
+        for image in image_paths:
+            images.append(cv2.imread(image))
+
+        return images, image_paths

@@ -7,6 +7,7 @@ import tensorflow.keras as K
 import numpy as np
 import glob
 import cv2
+import os
 
 
 class Yolo:
@@ -167,3 +168,54 @@ class Yolo:
             images.append(cv2.imread(image))
 
         return images, image_paths
+
+    def preprocess_images(self, images):
+        """public method to preprocess images"""
+
+        inputw = self.model.input.shape[1].value
+        inputh = self.model.input.shape[2].value
+
+        resize = (inputw, inputh)
+        image_shapes = []
+        pimages = []
+
+        for image in images:
+            shape = image.shape[:2]
+            image_shapes.append(shape)
+            image_resize = cv2.resize(
+                image, resize, interpolation=cv2.INTER_CUBIC)
+            image_rescaled = image_resize / 255
+            pimages.append(image_rescaled)
+
+        pimages = np.array(pimages)
+        image_shapes = np.stack(image_shapes, axis=0)
+
+        return pimages, image_shapes
+
+    def show_boxes(self, image, boxes, box_classes, box_scores, file_name):
+        """public method to show boxes"""
+
+        for i in range(len(boxes)):
+            start_x = int(boxes[i, 0])
+            start_y = int(boxes[i, 1])
+
+            end_x = int(boxes[i, 2])
+            end_y = int(boxes[i, 3])
+
+            cv2.rectangle(image, (start_x, start_y),
+                          (end_x, end_y), (255, 0, 0), 2)
+            BoxName = self.class_names[box_classes[i]]
+            text = "{} {:.2f}".format(BoxName, box_scores[i])
+            cv2.putText(image, text, (start_x, start_y - 5),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1,
+                        cv2.LINE_AA)
+        cv2.imshow(file_name, image)
+        k = cv2.waitKey(0)
+
+        if k == ord('s'):
+            os.mkdir('detections') if not os.path.isdir('detections') else None
+            os.chdir('detections')
+            cv2.imwrite(file_name, image)
+            os.chdir('../')
+
+        cv2.destroyAllWindows()

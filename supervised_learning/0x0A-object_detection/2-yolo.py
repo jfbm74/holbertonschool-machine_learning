@@ -17,7 +17,6 @@ class Yolo:
         with open(classes_path) as f:
             classes_t = f.readlines()
 
-        # Strip each line to get the Word (Class)
         classes = [x.strip() for x in classes_t]
 
         self.model = K.models.load_model(model_path)
@@ -27,7 +26,7 @@ class Yolo:
         self.anchors = anchors
 
     def process_outputs(self, outputs, image_size):
-        """ Function that process the Outputs of an image"""
+        """ Function that process the Outputs """
 
         boxes = []
         box_confidences = []
@@ -85,3 +84,24 @@ class Yolo:
             box[..., 3] += box[..., 1]
 
         return boxes, box_confidences, box_class_probs
+
+    def filter_boxes(self, boxes, box_confidences, box_class_probs):
+        """public method to filter the boxes"""
+
+        scores = [x * y for x, y in zip(box_confidences, box_class_probs)]
+
+        box_class_scores = [np.max(x, axis=-1).reshape(-1) for x in scores]
+        box_class_scores = np.concatenate(box_class_scores)
+
+        classes = [np.argmax(x, axis=-1).reshape(-1) for x in scores]
+        classes = np.concatenate(classes)
+
+        filtering_mask = box_class_scores >= self.class_t
+        list = [np.reshape(x, (-1, 4)) for x in boxes]
+        boxes = np.concatenate(list)
+
+        filtered_boxes = boxes[filtering_mask]
+        box_scores = box_class_scores[filtering_mask]
+        box_classes = classes[filtering_mask]
+
+        return filtered_boxes, box_classes, box_scores

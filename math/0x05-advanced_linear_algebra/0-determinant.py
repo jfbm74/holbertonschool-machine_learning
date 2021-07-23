@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-CWrite a function def determinant(matrix): that calculates the determinant of a matrix:
+Write a function def determinant(matrix): that calculates the
+determinant of a matrix:
 """
 
 

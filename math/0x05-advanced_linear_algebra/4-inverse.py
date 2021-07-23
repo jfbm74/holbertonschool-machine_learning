@@ -26,14 +26,12 @@ def determinant(matrix):
     if len(matrix) == 1:
         return matrix[0][0]
 
-
     if len(matrix) == 2:
         a = matrix[0][0]
         b = matrix[0][1]
         c = matrix[1][0]
         d = matrix[1][1]
         return (a * d) - (b * c)
-
 
     det = 0
     for i, k in enumerate(matrix[0]):

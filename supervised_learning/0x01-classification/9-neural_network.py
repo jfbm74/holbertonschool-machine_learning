@@ -34,7 +34,7 @@ class NeuralNetwork:
 
     @property
     def b1(self):
-        """retrieve Bias 2 getter """
+        """retrieve Bias 1 getter """
         return self.__b1
 
     @property

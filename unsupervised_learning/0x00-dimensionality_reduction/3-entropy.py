@@ -9,4 +9,9 @@ def HP(Di, beta):
     """
     Returns: (Hi, Pi)
     """
-    return None
+    Pi = np.exp(-Di * beta)
+    sumPi = np.sum(Pi)
+    Pi = Pi / sumPi
+    Hi = -np.sum(Pi * np.log2(Pi))
+    return (Hi, Pi)
+

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""placeholder"""
-
+"""Function that calculates the gradients of Y"""
 
 import numpy as np
 
@@ -8,8 +7,8 @@ import numpy as np
 Q_affinities = __import__('5-Q_affinities').Q_affinities
 
 
-def placeholder():
-    """placeholder"""
+def grads(Y, P):
+    """Method"""
     Q, num = Q_affinities(Y)
     P_Q = P - Q
     dY = np.zeros(Y.shape)

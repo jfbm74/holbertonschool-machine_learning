@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""placeholder"""
+"""
+Calculates the Q affinities
+"""
 
 
 import numpy as np
 
 
-def placeholder():
-    """placeholder"""
+def Q_affinities(Y):
+    """
+    Returns: Q, num
+    """
+    return None

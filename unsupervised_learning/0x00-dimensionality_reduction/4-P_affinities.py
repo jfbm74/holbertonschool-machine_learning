@@ -38,4 +38,3 @@ def P_affinities(X, tol=1e-5, perplexity=30.0):
             Hdiff = Hi - H
         P[i, np.concatenate((np.r_[0:i], np.r_[i+1:X.shape[0]]))] = Pi
     return (P.T + P) / (2 * X.shape[0])
-

@@ -7,41 +7,69 @@ import numpy as np
 
 def viterbi(Observation, Emission, Transition, Initial):
     """
-    Function viterbi
+    Returns: path, P, or None, None on failure
     """
-    try:
-        T = Observation.shape[0]
-        N, M = Emission.shape
+    if type(Observation) is not np.ndarray or len(Observation.shape) != 1:
+        return None, None
 
-        backpointer = np.zeros((N, T))
+    if type(Emission) is not np.ndarray or len(Emission.shape) != 2:
+        return None, None
 
-        F = np.zeros((N, T))
-        F[:, 0] = Initial.T * Emission[:, Observation[0]]
+    if type(Transition) is not np.ndarray or len(Transition.shape) != 2:
+        return None, None
 
-        for t in range(1, T):
-            for n in range(N):
-                Transitions = Transition[:, n]
-                Emissions = Emission[n, Observation[t]]
-                F[n, t] = np.amax(Transitions * F[:, t - 1]
-                                  * Emissions)
-                backpointer[n, t - 1] = np.argmax(Transitions * F[:, t - 1]
-                                                  * Emissions)
-        path = [0 for i in range(T)]
+    if type(Initial) is not np.ndarray or len(Initial.shape) != 2:
+        return None, None
 
-        last_state = np.argmax(F[:, T - 1])
-        path[0] = last_state
+    T = Observation.shape[0]
 
+    N, _ = Emission.shape
 
-        backtrack_index = 1
-        for i in range(T - 2, -1, -1):
-            path[backtrack_index] = int(backpointer[int(last_state), i])
-            last_state = backpointer[int(last_state), i]
-            backtrack_index += 1
+    if Transition.shape[0] != N or Transition.shape[1] != N:
+        return None, None
 
-        path.reverse()
+    if Initial.shape[0] != N or Initial.shape[1] != 1:
+        return None, None
 
-        P = np.amax(F[:, T - 1], axis=0)
+    if not np.sum(Emission, axis=1).all():
+        return None, None
 
-        return path, P
-    except Exception:
-        None, None
+    if not np.sum(Transition, axis=1).all():
+        return None, None
+
+    if not np.sum(Initial) == 1:
+        return None, None
+
+    viterbi = np.zeros((N, T))
+    backpointer = np.zeros((N, T))
+
+    # Initialization step
+    viterbi[:, 0] = Initial.transpose() * Emission[:, Observation[0]]
+
+    # Recursion
+    for t in range(1, T):
+        a = viterbi[:, t - 1]
+        b = Transition.transpose()
+        ab = a * b
+        ab_max = np.amax(ab, axis=1)
+        c = Emission[:, Observation[t]]
+        prob = ab_max * c
+
+        viterbi[:, t] = prob
+        backpointer[:, t - 1] = np.argmax(ab, axis=1)
+
+    # Path initialization
+    path = []
+    current = np.argmax(viterbi[:, T - 1])
+    path = [current] + path
+
+    # Path backwards traversing
+    for t in range(T - 2, -1, -1):
+        current = int(backpointer[current, t])
+        path = [current] + path
+
+    # Probability of obtaining the path sequence
+
+    P = np.amax(viterbi[:, T - 1], axis=0)
+
+    return path, P

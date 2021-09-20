@@ -20,7 +20,6 @@ class BayesianOptimization:
 
         self.f = f
 
-
         self.gp = GP(X_init, Y_init, l, sigma_f)
 
         X_s = np.linspace(bounds[0], bounds[1], num=ac_samples)

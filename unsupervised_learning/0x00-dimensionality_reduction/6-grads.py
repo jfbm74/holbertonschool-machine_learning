@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""Function that calculates the gradients of Y"""
+"""grads"""
 
 import numpy as np
-
-
 Q_affinities = __import__('5-Q_affinities').Q_affinities
 
 
 def grads(Y, P):
-    """Method"""
+    """
+    Calculate the gradients of Y
+    """
+    n, ndim = Y.shape
     Q, num = Q_affinities(Y)
-    P_Q = P - Q
-    dY = np.zeros(Y.shape)
-    for i in range(Y.shape[0]):
-        dY[i, :] = np.sum(np.tile(P_Q[:, i] * num[:, i],
-                                  (Y.shape[1], 1)).T * (Y[i, :] - Y), 0)
-    return (dY, Q)
+    dY = np.zeros((n, ndim))
+
+    PQ = P - Q
+    PQ_expanded = np.expand_dims((PQ * num).T, axis=2)
+    for i in range(n):
+        y_diff = Y[i, :] - Y
+        dY[i, :] = np.sum((PQ_expanded[i, :] * y_diff), 0)
+    return dY, Q

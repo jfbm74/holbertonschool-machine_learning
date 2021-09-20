@@ -7,27 +7,56 @@ expectation_maximization = __import__('8-EM').expectation_maximization
 
 
 def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
-    """Find best number of clusters using Bayesian Information Criterion."""
-    if ((type(X) is not np.ndarray or X.ndim != 2 or type(kmin) is not int
-         or kmin < 1 or type(verbose) is not bool or type(tol) is not float
-         or tol < 0 or type(iterations) is not int or iterations < 1)):
+    """
+    Returns: best_k, best_result, l, b, or None, None, None, None on failure
+    """
+    if type(X) is not np.ndarray or len(X.shape) != 2:
         return None, None, None, None
-    if kmax is None:
-        kmax = X.shape[0]
-    if ((type(kmax) is not int or kmax <= kmin)):
+
+    n, d = X.shape
+
+    if type(kmin) is not int or kmin <= 0 or kmin >= n:
         return None, None, None, None
-    best = None
-    bics = []
-    loglikes = []
+
+    if type(kmax) is not int or kmax <= 0 or kmax >= n:
+        return None, None, None, None
+
+    if kmin >= kmax:
+        return None, None, None, None
+
+    if type(iterations) is not int or iterations <= 0:
+        return None, None, None, None
+
+    if type(tol) is not float or tol <= 0:
+        return None, None, None, None
+
+    if type(verbose) is not bool:
+        return None, None, None, None
+
+    best_k = []
+
+    best_result = []
+
+    log_like = []
+
+    b = []
+
     for k in range(kmin, kmax + 1):
-        pi, m, S, _, loglike = expectation_maximization(X, k,
-                                                        iterations=iterations,
-                                                        tol=tol,
-                                                        verbose=verbose)
-        bic = (6 * k - 1) * np.log(X.shape[0]) - 2 * loglike
-        if best is None or bics[best - kmin] > bic:
-            best = k
-            bestres = (pi, m, S)
-        bics.append(bic)
-        loglikes.append(loglike)
-    return best, bestres, np.asarray(loglikes), np.asarray(bics)
+        best_k.append(k)
+        pi, m, S, _, total_log_like = expectation_maximization(X,
+                                                               k,
+                                                               iterations,
+                                                               tol,
+                                                               verbose)
+
+        best_result.append((pi, m, S))
+        log_like.append(total_log_like)
+        p = (k * d * (d + 1) / 2) + (d * k) + k - 1
+        BIC = p * np.log(n) - 2 * total_log_like
+        b.append(BIC)
+
+    log_like = np.array(log_like)
+    b = np.array(b)
+    index = np.argmin(b)
+
+    return best_k[index], best_result[index], log_like, b
